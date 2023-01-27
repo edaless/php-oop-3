@@ -66,10 +66,10 @@ class Stipendio
     // se c'è la quattordicesima non è importante come è settata la tredicesima
     public function getHtml()
     {
-        if ($this->quattordicesima) {
+        if ($this->getQuattordicesima()) {
 
             return ($this->getMensile() * 14);
-        } else if ($this->tredicesima) {
+        } else if ($this->getTredicesima()) {
 
             return ($this->getMensile() * 13);
         } else {
@@ -213,19 +213,18 @@ class Persona
 
     public function getHtml()
     {
-        return $this->nome . "<br>"
-            . $this->cognome . "<br>"
-            . $this->giornoNascita . "/" . $this->meseNascita . "/" . $this->annoNascita . "<br>"
-            . $this->luogoNascita . "<br>"
-            . $this->CF . "<br>";
+        return $this->getNome() . "<br>"
+            . $this->getCognome() . "<br>"
+            . $this->getGiornoNascita() . "/" . $this->meseNascita . "/" . $this->annoNascita . "<br>"
+            . $this->getLuogoNascita() . "<br>"
+            . $this->getCF() . "<br>";
     }
 }
 
 class Impiegato extends Persona
 {
 
-    private Persona $persona;
-    private Stipendio $stipendio;
+    private $stipendio;
     private $annoAssunzione;
     private $meseAssunzione;
     private $giornoAssunzione;
@@ -233,33 +232,33 @@ class Impiegato extends Persona
 
 
     public function __construct(
-        $persona,
+        $nome,
+        $cognome,
+        $annoNascita,
+        $meseNascita,
+        $giornoNascita,
+        $luogoNascita,
+        $CF,
         $stipendio,
         $annoAssunzione,
         $meseAssunzione,
         $giornoAssunzione
     ) {
-
-        $this->setPersona($persona);
+        parent::__construct(
+            $nome,
+            $cognome,
+            $annoNascita,
+            $meseNascita,
+            $giornoNascita,
+            $luogoNascita,
+            $CF
+        );
         $this->setStipendio($stipendio);
         $this->setAnnoAssunzione($annoAssunzione);
         $this->setMeseAssunzione($meseAssunzione);
         $this->setGiornoAssunzione($giornoAssunzione);
     }
 
-
-
-
-    public function getPersona()
-    {
-
-        return $this->persona;
-    }
-    public function setPersona($persona)
-    {
-
-        $this->persona = $persona;
-    }
 
 
 
@@ -325,11 +324,87 @@ class Impiegato extends Persona
     public function getHtml()
     {
         return
-            $this->persona->getHtml()
+            parent::getHtml()
             .
             $this->stipendio->getHtml() . "€<br>"
             .
-            $this->giornoAssunzione . "/" . $this->meseAssunzione . "/" . $this->annoAssunzione . "<br>";
+            $this->getGiornoAssunzione() . "/" . $this->meseAssunzione . "/" . $this->getAnnoAssunzione() . "<br>";
+    }
+}
+
+
+class Capo extends Persona
+{
+
+    private $dividendo;
+    private $bonus;
+
+
+
+    public function __construct(
+        $nome,
+        $cognome,
+        $annoNascita,
+        $meseNascita,
+        $giornoNascita,
+        $luogoNascita,
+        $CF,
+        $dividendo,
+        $bonus
+    ) {
+        parent::__construct(
+            $nome,
+            $cognome,
+            $annoNascita,
+            $meseNascita,
+            $giornoNascita,
+            $luogoNascita,
+            $CF
+        );
+        $this->setDividendo($dividendo);
+        $this->setBonus($bonus);
+    }
+
+
+
+
+
+
+    public function getDividendo()
+    {
+
+        return $this->dividendo;
+    }
+    public function setDividendo($dividendo)
+    {
+
+        $this->dividendo = $dividendo;
+    }
+
+
+
+
+
+
+    public function getBonus()
+    {
+
+        return $this->bonus;
+    }
+    public function setBonus($bonus)
+    {
+
+        $this->bonus = $bonus;
+    }
+
+
+
+    public function getHtml()
+    {
+        return
+            parent::getHtml()
+            . $this->getDividendo() . "<br>"
+            . $this->getBonus() . "<br>";
     }
 }
 
@@ -339,17 +414,21 @@ $stipendioTredicesima = new Stipendio(1000, true, false);
 $stipendioQuattordicesima = new Stipendio(1000, true, true);
 
 
-$carlo = new Persona("Carlo", "Ravassi", 2023, 6, 30, "segrate", "vfijvsdics0di");
+// $carlo = new Persona("Carlo", "Ravassi", 2023, 6, 30, "segrate", "vfijvsdics0di");
 
-$impiegato1 = new Impiegato($carlo, $stipendio, 2020, 1, 1);
+$impiegato1 = new Impiegato("Carletto", "Ravassi", 1990, 6, 30, "segrate", "vfijvsdics0di", $stipendioTredicesima, 2020, 1, 1);
+$capo1 = new Capo("Carletto", "Ravassi", 1990, 6, 30, "segrate", "vfijvsdics0di", 300, 5000);
 
-echo $stipendio->getHtml() . "<br>";
-echo $stipendioTredicesima->getHtml() . "<br>";
-echo $stipendioQuattordicesima->getHtml() . "<br>";
+// echo $stipendio->getHtml() . "<br>";
+// echo $stipendioTredicesima->getHtml() . "<br>";
+// echo $stipendioQuattordicesima->getHtml() . "<br>";
 
-echo "<br><br><br>";
+// echo "<br><br><br>";
 
 echo $impiegato1->getHtml();
+echo "<br><br><br>";
+
+echo $capo1->getHtml();
 
 
 
